@@ -1,0 +1,152 @@
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* Makefile.in (with_multilib_list): New variables substituted by
+	configure.
+	* config.gcc: Handle bare-metal multilibs in --with-multilib-list
+	option.
+	* config/arm/t-baremetal: New file.
+	* configure.ac (with_multilib_list): New AC_SUBST.
+	* configure: Regenerate.
+	* doc/install.texi (--with-multilib-list): Update description for
+	arm*-*-* targets to mention bare-metal multilibs.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config.gcc: Error out when conflicting multilib is detected.  Do not
+	loop over multilibs since no combination is legal.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* doc/install.texi (--with-multilib-list): Describe the meaning of the
+	option for arm*-*-* targets.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/arm.c (arm_print_operand_punct_valid_p): Make %? valid
+	for Thumb-1.
+	* config/arm/arm.h (TARGET_HAVE_CBZ): Define.
+	(TARGET_IDIV): Set for all Thumb targets provided they have hardware
+	divide feature.
+	* config/arm/thumb1.md (thumb1_cbz): New insn.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/arm.h (TARGET_HAVE_MOVT): Include ARMv8-M as having MOVT.
+	* config/arm/arm.c (arm_arch_name): (const_ok_for_op): Check MOVT/MOVW
+	availability with TARGET_HAVE_MOVT.
+	(thumb_legitimate_constant_p): Legalize high part of a label_ref as a
+	constant.
+	(thumb1_rtx_costs): Also return 0 if setting a half word constant and
+	movw is available.
+	(thumb1_size_rtx_costs): Make set of half word constant also cost 1
+	extra instruction if MOVW is available.  Make constant with bottom half
+	word zero cost 2 instruction if MOVW is available.
+	* config/arm/arm.md (define_attr "arch"): Add v8mb.
+	(define_attr "arch_enabled"): Set to yes if arch value is v8mb and
+	target is ARMv8-M Baseline.
+	* config/arm/thumb1.md (thumb1_movdi_insn): Add ARMv8-M Baseline only
+	alternative for constants satisfying j constraint.
+	(thumb1_movsi_insn): Likewise.
+	(movsi splitter for K alternative): Tighten condition to not trigger
+	if movt is available and j constraint is satisfied.
+	(Pe immediate splitter): Likewise.
+	(thumb1_movhi_insn): Add ARMv8-M Baseline only alternative for
+	constant fitting in an halfword to use movw.
+	* doc/sourcebuild.texi (arm_thumb1_movt_ko): Document new ARM
+	effective target.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/arm.h (TARGET_USE_MOVT): Check MOVT/MOVW availability
+	with TARGET_HAVE_MOVT.
+	(TARGET_HAVE_MOVT): Define.
+	* config/arm/arm.c (const_ok_for_op): Check MOVT/MOVW
+	availability with TARGET_HAVE_MOVT.
+	* config/arm/arm.md (arm_movt): Use TARGET_HAVE_MOVT to check movt
+	availability.
+	(addsi splitter): Use TARGET_USE_MOVT to check whether to use
+	movt + movw.
+	(symbol_refs movsi splitter): Remove TARGET_32BIT check.
+	(arm_movtas_ze): Use TARGET_HAVE_MOVT to check movt availability.
+	* config/arm/constraints.md (define_constraint "j"): Use
+	TARGET_HAVE_MOVT to check movt availability.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/arm-protos.h: Reindent FL_FOR_* macro definitions.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/arm-arches.def (armv8-m.base): Define new architecture.
+	(armv8-m.main): Likewise.
+	(armv8-m.main+dsp): Likewise
+	* config/arm/arm-protos.h (FL_FOR_ARCH8M_BASE): Define.
+	(FL_FOR_ARCH8M_MAIN): Likewise.
+	* config/arm/arm-tables.opt: Regenerate.
+	* config/arm/bpabi.h: Add armv8-m.base, armv8-m.main and
+	armv8-m.main+dsp to BE8_LINK_SPEC.
+	* config/arm/arm.h (TARGET_HAVE_LDACQ): Exclude ARMv8-M.
+	(enum base_architecture): Add BASE_ARCH_8M_BASE and BASE_ARCH_8M_MAIN.
+	(TARGET_ARM_V8M): Define.
+	* config/arm/arm.c (arm_arch_name): Increase size to work with ARMv8-M
+	Baseline and Mainline.
+	(arm_option_override_internal): Also disable arm_restrict_it when
+	!arm_arch_notm.
+	(arm_file_start): Increase architecture buffer size.
+	* doc/invoke.texi: Document architectures armv8-m.base, armv8-m.main
+	and armv8-m.main+dsp.
+	(mno-unaligned-access): Clarify that this is disabled by default for
+	ARMv8-M Baseline architecture as well.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* config/arm/elf.h: Use __ARM_ARCH_ISA_THUMB and __ARM_ARCH_ISA_ARM to
+	decide whether to prevent some libgcc routines being included for some
+	multilibs rather than __ARM_ARCH_6M__ and add comment to indicate the
+	link between this condition and the one in
+	libgcc/config/arm/lib1func.S.
+	* config/arm/arm.h (TARGET_ARM_V6M): Add check to TARGET_ARM_ARCH.
+	(TARGET_ARM_V7M): Likewise.
+
+2015-12-16  Tejas Belagod  <tejas.belagod@arm.com>
+
+	Backport from Mainline
+	2015-11-25  Jan Hubicka  <jh@suse.cz>
+
+	* ipa-visibility.c (cgraph_externally_visible_p,
+	varpool_node::externally_visible_p): When doing incremental linking,
+	hidden symbols may be still used later.
+	(update_visibility_by_resolution_info): Do not drop weak during
+	incremental link.
+	(function_and_variable_visibility): Fix formating.
+	* flag-types.h (lto_linker_output): Declare.
+	* common.opt 9flag_incremental_link): New flag.
+
+
+2015-12-10  Tejas Belagod  <tejas.belagod@arm.com>
+
+	Backport from Mainline
+	2015-04-22  Hale Wang  <hale.wang@arm.com>
+		    Terry Guo  <terry.guo@arm.com>
+
+	PR rtl-optimization/64818
+	* combine.c (can_combine_p): Don't combine user-specified
+	register if it is in an asm input.
+
+2015-12-04  Andre Vieira  <andre.simoesdiasvieira@arm.com>
+
+	Backport from mainline:
+
+	2015-10-09  Andre Vieira  <andre.simoesdiasvieira@arm.com>
+
+	* match.pd: ((X inner_op C0) outer_op C1) New pattern.
+	((X & C2) << C1): Expand to...
+	(X {&,^,|} C2 << C1): ...This.
+	((X & C2) >> C1): Expand to...
+	(X {&,^,|} C2 >> C1): ...This.
+
+	2015-07-07  Richard Biener  <rguenther@suse.de>
+
+	* fold-const.c (fold_binary_loc): Move
+	(X & C2) << C1 -> (X << C1) & (C2 << C1) simplification ...
+	* match.pd: ... here.

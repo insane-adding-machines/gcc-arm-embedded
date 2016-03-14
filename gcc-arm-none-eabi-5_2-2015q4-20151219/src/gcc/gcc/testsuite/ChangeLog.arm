@@ -1,0 +1,42 @@
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* lib/target-supports.exp (check_effective_target_arm_thumb1_movt_ko):
+	Define effective target.
+	* gcc.target/arm/pr42574.c: Require arm_thumb1_movt_ko instead of
+	arm_thumb1_ok as effective target to exclude ARMv8-M Baseline.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* lib/target-supports.exp: Generate add_options_for_arm_arch_FUNC and
+	check_effective_target_arm_arch_FUNC_multilib for ARMv8-M Baseline and
+	ARMv8-M Mainline architectures.
+
+2015-12-17  Thomas Preud'homme  <thomas.preudhomme@arm.com>
+
+	* lib/target-supports.exp (check_effective_target_arm_cortex_m): Use
+	__ARM_ARCH_ISA_ARM to test for Cortex-M devices.
+
+2015-12-10  Tejas Belagod  <tejas.belagod@arm.com>
+
+	Backport from Mainline
+	2015-04-22  Hale Wang  <hale.wang@arm.com>
+		    Terry Guo  <terry.guo@arm.com>
+
+	PR rtl-optimization/64818
+	* gcc.target/arm/pr64818.c: New test.
+
+2015-12-04  Andre Vieira <andre.simoesdiasvieira@arm.com>
+
+	Backport from mainline:
+	2015-10-15  Andre Vieira  <andre.simoesdiasvieira@arm.com>
+
+	PR testsuite/67948
+	* gcc.target/arm/xor-and.c: check for eor instead of orr.
+
+2015-12-04  Andre Vieira  <andre.simoesdiasvieira@arm.com>
+
+	Backport from mainline:
+	2015-10-09  Andre Vieira  <andre.simoesdiasvieira@arm.com>
+		    Hale Wang  <hale.wang@arm.com>
+
+	* gcc.dg/tree-ssa/forwprop-33.c: New.
