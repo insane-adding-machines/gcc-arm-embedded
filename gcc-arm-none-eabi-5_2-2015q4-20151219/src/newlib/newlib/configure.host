@@ -398,6 +398,11 @@ case "${host}" in
 	sys_dir=a29khif
 	signal_dir=
 	;;
+  arm-frosted-*)
+	sys_dir=frosted
+	newlib_cflags="${newlib_cflags} -DMALLOC_PROVIDED -DSIGNAL_PROVIDED -DMISSING_SYSCALL_NAMES"
+	#syscall_dir=syscalls
+	;;
   arm*-*-*)
 	sys_dir=arm
 	if [ "x${newlib_may_supply_syscalls}" = "xno" ] ; then

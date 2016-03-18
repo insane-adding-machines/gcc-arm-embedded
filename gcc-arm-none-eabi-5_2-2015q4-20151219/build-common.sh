@@ -320,7 +320,7 @@ fi
 GCC_VER_SHORT=`echo $GCC_VER_NAME | sed $SEDOPTION 's/_/\./g'`
 HOST_MINGW=i686-w64-mingw32
 HOST_MINGW_TOOL=i686-w64-mingw32
-TARGET=arm-none-eabi
+TARGET=arm-frosted-eabi
 ENV_CFLAGS=
 ENV_CPPFLAGS=
 ENV_LDFLAGS=
