@@ -474,6 +474,31 @@ for d in $plugin_src_dirs; do
 done
 fi
 
+echo Task [III-4.2] /$HOST_NATIVE/elf2flt/
+saveenv
+prepend_path PATH $INSTALLDIR_NATIVE/bin
+rm -rf $BUILDDIR_NATIVE/elf2flt && mkdir -p $BUILDDIR_NATIVE/elf2flt
+pushd $BUILDDIR_NATIVE/elf2flt
+
+# Build ELF2FLT sources
+#./configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=arm-frosted-eabi --prefix=/home/vinz/x-tools/arm-frosted-eabi --with-bfd-include-dir=/home/vinz/frosted-dev/crosstool-ng/.build/arm-frosted-eabi/build/build-binutils-host-x86_64-build_pc-linux-gnu/bfd --with-binutils-include-dir=/home/vinz/frosted-dev/crosstool-ng/.build/src/binutils-2.25.1/include --with-libbfd=/home/vinz/frosted-dev/crosstool-ng/.build/arm-frosted-eabi/build/build-binutils-host-x86_64-build_pc-linux-gnu/bfd/libbfd.a --with-libiberty=/home/vinz/frosted-dev/crosstool-ng/.build/arm-frosted-eabi/build/build-binutils-host-x86_64-build_pc-linux-gnu/libiberty/libiberty.a
+
+# elf2flt is quirky, so need to cd to it's src dir
+cd $SRCDIR/elf2flt
+make clean
+$SRCDIR/elf2flt/configure --target=$TARGET \
+    --prefix=$INSTALLDIR_NATIVE \
+    --with-libbfd=$BUILDDIR_NATIVE/binutils/bfd/libbfd.a \
+    --with-libiberty=$BUILDDIR_NATIVE/binutils/libiberty/libiberty.a \
+    --with-bfd-include-dir=$BUILDDIR_NATIVE/binutils/binutils/bfd \
+    --with-binutils-include-dir=$SRCDIR/$BINUTILS/include LDFLAGS=-ldl
+    #--with-build-sysroot=$INSTALLDIR_NATIVE/arm-frosted-eabi \
+make -j$JOBS
+make install
+cd -
+popd
+restoreenv
+
 echo Task [III-5] /$HOST_NATIVE/gcc-size-libstdcxx/
 rm -f $BUILDDIR_NATIVE/target-libs/arm-frosted-eabi/usr
 ln -s . $BUILDDIR_NATIVE/target-libs/arm-frosted-eabi/usr
@@ -942,43 +967,43 @@ zip -r9 $PACKAGEDIR/$PACKAGE_NAME_MINGW.zip .
 popd
 fi #end of if [ "x$skip_mingw32" != "xyes" ] ;
 
-echo Task [V-0] /package_sources/
-pushd $PACKAGEDIR
-rm -rf $PACKAGE_NAME && mkdir -p $PACKAGE_NAME/src
-cp -f $SRCDIR/$CLOOG_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$EXPAT_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$GMP_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$LIBELF_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$LIBICONV_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$MPC_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$MPFR_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$ISL_PACK $PACKAGE_NAME/src/
-cp -f $SRCDIR/$ZLIB_PACK $PACKAGE_NAME/src/
-pack_dir_clean $SRCDIR $BINUTILS $PACKAGE_NAME/src/$BINUTILS.tar.bz2
-pack_dir_clean $SRCDIR $GCC $PACKAGE_NAME/src/$GCC.tar.bz2
-pack_dir_clean $SRCDIR $GDB $PACKAGE_NAME/src/$GDB.tar.bz2 \
-  --exclude="gdb/testsuite/config/qemu.exp" --exclude="sim"
-pack_dir_clean $SRCDIR $NEWLIB $PACKAGE_NAME/src/$NEWLIB.tar.bz2
-pack_dir_clean $SRCDIR $SAMPLES $PACKAGE_NAME/src/$SAMPLES.tar.bz2
-pack_dir_clean $SRCDIR $BUILD_MANUAL $PACKAGE_NAME/src/$BUILD_MANUAL.tar.bz2
-if [ -d $SRCDIR/$GCC_PLUGINS/ ]; then
-  pack_dir_clean $SRCDIR $GCC_PLUGINS $PACKAGE_NAME/src/$GCC_PLUGINS.tar.bz2
-fi
-if [ "x$skip_mingw32" != "xyes" ] ; then
-    pack_dir_clean $SRCDIR $INSTALLATION \
-      $PACKAGE_NAME/src/$INSTALLATION.tar.bz2 \
-      --exclude=build.log --exclude=output
-fi
-cp $ROOT/$RELEASE_FILE $PACKAGE_NAME/
-cp $ROOT/$README_FILE $PACKAGE_NAME/
-cp $ROOT/$LICENSE_FILE $PACKAGE_NAME/
-cp $ROOT/$BUILD_MANUAL_FILE $PACKAGE_NAME/
-cp $ROOT/build-common.sh $PACKAGE_NAME/
-cp $ROOT/build-prerequisites.sh $PACKAGE_NAME/
-cp $ROOT/build-toolchain.sh $PACKAGE_NAME/
-tar cjf $PACKAGE_NAME-src.tar.bz2 $PACKAGE_NAME
-rm -rf $PACKAGE_NAME
-popd
+#echo Task [V-0] /package_sources/
+#pushd $PACKAGEDIR
+#rm -rf $PACKAGE_NAME && mkdir -p $PACKAGE_NAME/src
+#cp -f $SRCDIR/$CLOOG_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$EXPAT_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$GMP_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$LIBELF_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$LIBICONV_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$MPC_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$MPFR_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$ISL_PACK $PACKAGE_NAME/src/
+#cp -f $SRCDIR/$ZLIB_PACK $PACKAGE_NAME/src/
+#pack_dir_clean $SRCDIR $BINUTILS $PACKAGE_NAME/src/$BINUTILS.tar.bz2
+#pack_dir_clean $SRCDIR $GCC $PACKAGE_NAME/src/$GCC.tar.bz2
+#pack_dir_clean $SRCDIR $GDB $PACKAGE_NAME/src/$GDB.tar.bz2 \
+#  --exclude="gdb/testsuite/config/qemu.exp" --exclude="sim"
+#pack_dir_clean $SRCDIR $NEWLIB $PACKAGE_NAME/src/$NEWLIB.tar.bz2
+#pack_dir_clean $SRCDIR $SAMPLES $PACKAGE_NAME/src/$SAMPLES.tar.bz2
+#pack_dir_clean $SRCDIR $BUILD_MANUAL $PACKAGE_NAME/src/$BUILD_MANUAL.tar.bz2
+#if [ -d $SRCDIR/$GCC_PLUGINS/ ]; then
+#  pack_dir_clean $SRCDIR $GCC_PLUGINS $PACKAGE_NAME/src/$GCC_PLUGINS.tar.bz2
+#fi
+#if [ "x$skip_mingw32" != "xyes" ] ; then
+#    pack_dir_clean $SRCDIR $INSTALLATION \
+#      $PACKAGE_NAME/src/$INSTALLATION.tar.bz2 \
+#      --exclude=build.log --exclude=output
+#fi
+#cp $ROOT/$RELEASE_FILE $PACKAGE_NAME/
+#cp $ROOT/$README_FILE $PACKAGE_NAME/
+#cp $ROOT/$LICENSE_FILE $PACKAGE_NAME/
+#cp $ROOT/$BUILD_MANUAL_FILE $PACKAGE_NAME/
+#cp $ROOT/build-common.sh $PACKAGE_NAME/
+#cp $ROOT/build-prerequisites.sh $PACKAGE_NAME/
+#cp $ROOT/build-toolchain.sh $PACKAGE_NAME/
+#tar cjf $PACKAGE_NAME-src.tar.bz2 $PACKAGE_NAME
+#rm -rf $PACKAGE_NAME
+#popd
 
 echo Task [V-1] /md5_checksum/
 pushd $PACKAGEDIR
@@ -989,5 +1014,5 @@ if [ "x$skip_mingw32" != "xyes" ] ; then
     $MD5 $PACKAGE_NAME_MINGW.installjammer.exe >>md5.txt
     $MD5 $PACKAGE_NAME_MINGW.zip         >>md5.txt
 fi
-$MD5 $PACKAGE_NAME-src.tar.bz2 >>md5.txt
+#$MD5 $PACKAGE_NAME-src.tar.bz2 >>md5.txt
 popd
