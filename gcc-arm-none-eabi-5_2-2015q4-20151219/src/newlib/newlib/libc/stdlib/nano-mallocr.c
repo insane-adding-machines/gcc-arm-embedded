@@ -209,9 +209,9 @@ static void* sbrk_aligned(RARG malloc_size_t s)
 {
     char *p, *align_p;
 
-    if (sbrk_start == NULL) sbrk_start = _sbrk_r(RCALL 0);
+    if (sbrk_start == NULL) sbrk_start = _SBRK_R(RCALL 0);
 
-    p = _sbrk_r(RCALL s);
+    p = _SBRK_R(RCALL s);
 
     /* sbrk returns -1 if fail to allocate */
     if (p == (void *)-1)
@@ -222,7 +222,7 @@ static void* sbrk_aligned(RARG malloc_size_t s)
     {
         /* p is not aligned, ask for a few more bytes so that we have s
          * bytes reserved from align_p. */
-        p = _sbrk_r(RCALL align_p - p);
+        p = _SBRK_R(RCALL align_p - p);
         if (p == (void *)-1)
             return p;
     }
@@ -486,7 +486,7 @@ struct mallinfo nano_mallinfo(RONEARG)
 
     if (sbrk_start == NULL) total_size = 0;
     else {
-        sbrk_now = _sbrk_r(RCALL 0);
+        sbrk_now = _SBRK_R(RCALL 0);
 
         if (sbrk_now == (void *)-1)
             total_size = (size_t)-1;
