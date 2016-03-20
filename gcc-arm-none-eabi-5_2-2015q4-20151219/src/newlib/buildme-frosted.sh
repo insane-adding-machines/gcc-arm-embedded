@@ -8,8 +8,7 @@ mkdir -p build
 cd build
 mkdir -p lib
 
-#CFLAGS_FOR_TARGET="-g -Os -mcpu=cortex-m3 -mthumb -mlittle-endian -mthumb-interwork -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED -D_REENT_ONLY"
-CFLAGS_FOR_TARGET="-g -Os -mcpu=cortex-m3 -mthumb -mlittle-endian -mthumb-interwork -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED"
+CFLAGS_FOR_TARGET="-g -Os -mlittle-endian -mthumb-interwork -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED"
  
 export CFLAGS_FOR_TARGET
 
@@ -17,7 +16,8 @@ CT_TARGET_ALIAS="arm-frosted"
 export CT_TARGET_ALIAS
 
 #--enable-newlib-nano-formatted-io
-../configure --prefix=`pwd`/lib --target=arm-frosted-eabi --with-mode=thumb --with-cpu=cortex=m3 --disable-multilib --disable-newlib-supplied-syscalls
+../configure --prefix=`pwd`/lib --target=arm-frosted-eabi --with-mode=thumb --disable-newlib-supplied-syscalls
+
 if [ $? -ne 0 ]; then
     echo Failed to configure newlib
     exit 1

@@ -327,7 +327,7 @@ popd
 echo Task [III-2] /$HOST_NATIVE/newlib/
 saveenv
 prepend_path PATH $INSTALLDIR_NATIVE/bin
-saveenvvar CFLAGS_FOR_TARGET '-g -O2 -ffunction-sections -fdata-sections'
+saveenvvar CFLAGS_FOR_TARGET '-g -O2 -ffunction-sections -fdata-sections -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED'
 rm -rf $BUILDDIR_NATIVE/newlib && mkdir -p $BUILDDIR_NATIVE/newlib
 pushd $BUILDDIR_NATIVE/newlib
 
@@ -366,7 +366,7 @@ restoreenv
 echo Task [III-3] /$HOST_NATIVE/newlib-nano/
 saveenv
 prepend_path PATH $INSTALLDIR_NATIVE/bin
-saveenvvar CFLAGS_FOR_TARGET '-g -Os -ffunction-sections -fdata-sections'
+saveenvvar CFLAGS_FOR_TARGET '-g -Os  -ffunction-sections -fdata-sections -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED'
 rm -rf $BUILDDIR_NATIVE/newlib-nano && mkdir -p $BUILDDIR_NATIVE/newlib-nano
 pushd $BUILDDIR_NATIVE/newlib-nano
 
@@ -616,7 +616,7 @@ if [ "x$DEBUG_BUILD_OPTIONS" = "x" ] ; then
         strip_binary strip $bin
     done
 
-    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-frosted-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm +111 -and ! -type d`
+    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-frosted-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm /111 -and ! -type d`
     for bin in $STRIP_BINARIES ; do
         strip_binary strip $bin
     done
