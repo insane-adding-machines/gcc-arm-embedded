@@ -798,6 +798,9 @@ case "${target}" in
   aarch64*-*-* )
     libgloss_dir=aarch64
     ;;
+  arm*-*-frosted | arm*-frosted-*)
+    libgloss_dir=arm-frosted
+    ;;
   arm*-*-*)
     libgloss_dir=arm
     ;;

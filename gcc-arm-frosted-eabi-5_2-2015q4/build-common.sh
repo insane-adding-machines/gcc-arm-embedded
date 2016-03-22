@@ -233,9 +233,9 @@ copy_multi_libs() {
         cp -f "${src_dir}/libsupc++.a" "${dst_dir}/libsupc++_nano.a"
         cp -f "${src_dir}/libc.a" "${dst_dir}/libc_nano.a"
         cp -f "${src_dir}/libg.a" "${dst_dir}/libg_nano.a"
-        cp -f "${src_dir}/librdimon.a" "${dst_dir}/librdimon_nano.a"
-        cp -f "${src_dir}/nano.specs" "${dst_dir}/"
-        cp -f "${src_dir}/rdimon.specs" "${dst_dir}/"
+        #cp -f "${src_dir}/librdimon.a" "${dst_dir}/librdimon_nano.a"
+        #cp -f "${src_dir}/nano.specs" "${dst_dir}/"
+        #cp -f "${src_dir}/rdimon.specs" "${dst_dir}/"
         cp -f "${src_dir}/nosys.specs" "${dst_dir}/"
         cp -f "${src_dir}/"*crt0.o "${dst_dir}/"
     done

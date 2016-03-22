@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.59)dnl
+AC_PREREQ(2.59)
 AC_INIT(crt0.c)
 
 if test "$srcdir" = "." ; then
@@ -19,7 +19,6 @@ AC_ARG_PROGRAM
 AC_PROG_INSTALL
 
 LIB_AC_PROG_CC
-
 AS=${AS-as}
 AC_SUBST(AS)
 AR=${AR-ar}
@@ -29,7 +28,18 @@ AC_SUBST(LD)
 AC_PROG_RANLIB
 LIB_AM_PROG_AS
 
-host_makefile_frag=${srcdir}/../config/ppc.mh
+case "${target}" in
+  *-*-elf | *-*-eabi | *-*-tirtos*)
+	objtype=elf-
+	;;
+  *-*-coff)
+	objtype=coff-
+	;;
+esac
+
+AC_SUBST(objtype)
+
+host_makefile_frag=`cd $srcdir/../config;pwd`/default.mh
 
 dnl We have to assign the same value to other variables because autoconf
 dnl doesn't provide a mechanism to substitute a replacement keyword with
@@ -49,3 +59,4 @@ CONFIG_SHELL=${CONFIG_SHELL-/bin/sh}
 libgloss_topdir=${libgloss_topdir}
 )
 AC_OUTPUT
+

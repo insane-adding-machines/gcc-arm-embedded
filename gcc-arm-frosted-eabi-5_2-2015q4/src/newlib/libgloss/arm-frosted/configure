@@ -585,6 +585,7 @@ ac_unique_file="crt0.c"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 host_makefile_frag_path
+objtype
 CCASFLAGS
 CCAS
 RANLIB
@@ -2414,7 +2415,6 @@ else
   test "${CFLAGS+set}" = set || CFLAGS="-g"
 fi
 
-
 AS=${AS-as}
 
 AR=${AR-ar}
@@ -2521,7 +2521,18 @@ test "${CCASFLAGS+set}" = set || CCASFLAGS=$CFLAGS
 
 
 
-host_makefile_frag=${srcdir}/../config/ppc.mh
+case "${target}" in
+  *-*-elf | *-*-eabi | *-*-tirtos*)
+	objtype=elf-
+	;;
+  *-*-coff)
+	objtype=coff-
+	;;
+esac
+
+
+
+host_makefile_frag=`cd $srcdir/../config;pwd`/default.mh
 
 host_makefile_frag_path=$host_makefile_frag
 
@@ -3844,4 +3855,5 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
+
 

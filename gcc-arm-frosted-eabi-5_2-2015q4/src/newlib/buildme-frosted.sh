@@ -4,19 +4,23 @@ rm -rf build/config*
 rm -rf build/etc
 rm -rf build/lib
 rm -rf build/Makefile
+rm -rf build
 mkdir -p build
 cd build
 mkdir -p lib
 
 CFLAGS_FOR_TARGET="-g -Os -mlittle-endian -mthumb-interwork -fPIC -mlong-calls -fno-common -msingle-pic-base -mno-pic-data-is-text-relative -DREENTRANT_SYSCALLS_PROVIDED"
- 
 export CFLAGS_FOR_TARGET
 
-CT_TARGET_ALIAS="arm-frosted"
-export CT_TARGET_ALIAS
+#CT_TARGET_ALIAS="arm-frosted"
+#export CT_TARGET_ALIAS
 
 #--enable-newlib-nano-formatted-io
-../configure --prefix=`pwd`/lib --target=arm-frosted-eabi --with-mode=thumb --disable-newlib-supplied-syscalls
+../configure --prefix=`pwd`/lib \
+    --target=arm-frosted-eabi \
+    --with-mode=thumb \
+    --disable-newlib-supplied-syscalls \
+    --disable-nls
 
 if [ $? -ne 0 ]; then
     echo Failed to configure newlib

@@ -1,16 +1,7 @@
-# Copyright (c) 1998 Cygnus Support
 #
-# The authors hereby grant permission to use, copy, modify, distribute,
-# and license this software and its documentation for any purpose, provided
-# that existing copyright notices are retained in all copies and that this
-# notice is included verbatim in any distributions. No written agreement,
-# license, or royalty fee is required for any of the authorized uses.
-# Modifications to this software may be copyrighted by their authors
-# and need not follow the licensing terms described here, provided that
-# the new terms are clearly indicated on the first page of each file where
-# they apply.
-
-VPATH = @srcdir@
+#
+DESTDIR =
+VPATH = @srcdir@ @srcdir@/..
 srcdir = @srcdir@
 objdir = .
 srcroot = $(srcdir)/../..
@@ -21,40 +12,45 @@ exec_prefix = @exec_prefix@
 
 host_alias = @host_alias@
 target_alias = @target_alias@
-program_transform_name = @program_transform_name@
 
 bindir = @bindir@
 libdir = @libdir@
 tooldir = $(exec_prefix)/$(target_alias)
 
-# Multilib support variables.
-# TOP is used instead of MULTI{BUILD,SRC}TOP.
-MULTIDIRS =
-MULTISUBDIR =
-MULTIDO = true
-MULTICLEAN = true
+objtype = @objtype@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
+
+# Multilib support variables.
+# TOP is used instead of MULTI{BUILD,SRC}TOP.
+MULTISRCTOP =
+MULTIBUILDTOP =
+MULTIDIRS =
+MULTISUBDIR =
+MULTIDO = true
+MULTICLEAN = true
 
 SHELL =	/bin/sh
 
 CC = @CC@
 
 AS = @AS@
-
 AR = @AR@
-
 LD = @LD@
-
 RANLIB = @RANLIB@
 
-OBJDUMP = `t='$(program_transform_name)'; echo objdump | sed -e $$t`
-OBJCOPY = `t='$(program_transform_name)'; echo objcopy | sed -e $$t`
+OBJDUMP = `if [ -f ${objroot}/../binutils/objdump ] ; \
+	then echo ${objroot}/../binutils/objdump ; \
+	else t='$(program_transform_name)'; echo objdump | sed -e $$t ; fi`
+OBJCOPY = `if [ -f ${objroot}/../binutils/objcopy ] ; \
+	then echo ${objroot}/../binutils/objcopy ; \
+	else t='$(program_transform_name)'; echo objcopy | sed -e $$t ; fi`
 
 # object files needed
 OBJS = crt0.o
+CRT0		= crt0.o
 
 # Object files specific to particular targets.
 EVALOBJS = ${OBJS}
@@ -63,7 +59,7 @@ GCC_LDFLAGS = `if [ -d ${objroot}/../gcc ] ; \
 	then echo -L${objroot}/../gcc ; fi`
 
 #CRTOBJS = crti.o crtn.o crt1.o crt2.o gcrt1.o gcrt2.o
-CRTOBJS = #crt0.o
+CRTOBJS = crt0.o
 OUTPUTS = libgloss.a $(CRTOBJS)
 
 NEWLIB_CFLAGS = `if [ -d ${objroot}/newlib ]; then echo -I${objroot}/newlib/targ-include -I${srcroot}/newlib/libc/include; fi` -ffunction-sections -fdata-sections
@@ -138,10 +134,9 @@ distclean maintainer-clean realclean: clean
 
 .PHONY: install info install-info clean-info
 install:
-	for outputs in ${OUTPUTS}; do\
-	 ${INSTALL_DATA} $${outputs} $(DESTDIR)/${tooldir}/lib${MULTISUBDIR}/$${outputs}; \
-	done
+	set -e; for x in ${OUTPUTS}; do ${INSTALL_DATA} $$x $(DESTDIR)${tooldir}/lib${MULTISUBDIR}/$$x; done
 
+doc:
 info:
 install-info:
 clean-info:
