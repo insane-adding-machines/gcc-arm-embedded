@@ -946,7 +946,7 @@ all-recursive: stmp-targ-include
 # used while building.
 stmp-targ-include: config.status
 	-rm -rf targ-include stmp-targ-include
-	mkdir targ-include targ-include/sys targ-include/machine targ-include/bits
+	mkdir targ-include targ-include/sys targ-include/machine targ-include/bits targ-include/arpa targ-include/net targ-include/netinet
 	cp newlib.h targ-include/newlib.h
 	-for i in $(srcdir)/libc/machine/$(machine_dir)/machine/*.h; do \
 	    if [ -f $$i ]; then \
@@ -986,6 +986,21 @@ stmp-targ-include: config.status
 	-for i in $(srcdir)/libc/sys/$(sys_dir)/bits/*.h; do \
 	    if [ -f $$i ]; then \
 	      cp $$i targ-include/bits/`basename $$i`; \
+	    else true; fi ; \
+	  done
+	-for i in $(srcdir)/libc/sys/$(sys_dir)/arpa/*.h; do \
+	    if [ -f $$i ]; then \
+	      cp $$i targ-include/arpa/`basename $$i`; \
+	    else true; fi ; \
+	  done
+	-for i in $(srcdir)/libc/sys/$(sys_dir)/net/*.h; do \
+	    if [ -f $$i ]; then \
+	      cp $$i targ-include/net/`basename $$i`; \
+	    else true; fi ; \
+	  done
+	-for i in $(srcdir)/libc/sys/$(sys_dir)/netinet/*.h; do \
+	    if [ -f $$i ]; then \
+	      cp $$i targ-include/netinet/`basename $$i`; \
 	    else true; fi ; \
 	  done
 	-for i in $(srcdir)/libc/sys/$(sys_dir)/machine/*.h; do \
@@ -1051,6 +1066,24 @@ install-data-local:	install-toollibLIBRARIES
 	  for i in $(srcdir)/libc/sys/$(sys_dir)/bits/*.h; do \
 	    if [ -f $$i ]; then \
 	     $(INSTALL_DATA) $$i $(DESTDIR)$(tooldir)/include/bits/`basename $$i`; \
+	    else true; fi ; \
+	  done ; \
+	  $(mkinstalldirs) $(DESTDIR)$(tooldir)/include/arpa; \
+	  for i in $(srcdir)/libc/sys/$(sys_dir)/arpa/*.h; do \
+	    if [ -f $$i ]; then \
+	     $(INSTALL_DATA) $$i $(DESTDIR)$(tooldir)/include/arpa/`basename $$i`; \
+	    else true; fi ; \
+	  done ; \
+	  $(mkinstalldirs) $(DESTDIR)$(tooldir)/include/net; \
+	  for i in $(srcdir)/libc/sys/$(sys_dir)/net/*.h; do \
+	    if [ -f $$i ]; then \
+	     $(INSTALL_DATA) $$i $(DESTDIR)$(tooldir)/include/net/`basename $$i`; \
+	    else true; fi ; \
+	  done ; \
+	  $(mkinstalldirs) $(DESTDIR)$(tooldir)/include/netinet; \
+	  for i in $(srcdir)/libc/sys/$(sys_dir)/netinet/*.h; do \
+	    if [ -f $$i ]; then \
+	     $(INSTALL_DATA) $$i $(DESTDIR)$(tooldir)/include/netinet/`basename $$i`; \
 	    else true; fi ; \
 	  done ; \
 	  for i in $(srcdir)/libc/sys/$(sys_dir)/machine/*.h; do \
